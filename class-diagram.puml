@@ -1,0 +1,126 @@
+@startuml Enemy Wave System
+
+' Style settings
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam linetype ortho
+
+' Interfaces
+interface IEnemySpawner {
+    +SpawnEnemy(type: EnemyType, position: Vector3): EnemyController
+    +SpawnWave(waveConfig: EnemyWave): List<EnemyController>
+}
+
+interface IWaveManager {
+    +StartWave(): void
+    +StopWave(): void
+    +IsWaveActive: bool
+}
+
+interface IEnemyRepository {
+    +GetEnemyByType(type: EnemyType): EnemyProperties
+}
+
+interface IPathFinder {
+    +GetPath(pathId: string): Path
+    +StartPoint: Vector3
+    +IsValid: bool
+}
+
+interface IEnemyFactory {
+    +CreateEnemy(properties: EnemyProperties, position: Vector3, parent: Transform, pathId: string): EnemyController
+}
+
+' Classes
+class EnemyController {
+    -properties: EnemyProperties
+    -pathId: string
+    -currentHealth: float
+    -isDead: bool
+    +Initialize(properties: EnemyProperties, pathId: string): void
+    +TakeDamage(amount: float): void
+    +Tick(): void
+}
+
+class EnemyView {
+    -controller: EnemyController
+    -animator: Animator
+    +Initialize(controller: EnemyController, properties: EnemyProperties): void
+    +UpdateVisuals(): void
+}
+
+class EnemyFactory {
+    -container: IObjectResolver
+    +CreateEnemy(properties: EnemyProperties, position: Vector3, parent: Transform, pathId: string): EnemyController
+}
+
+class EnemySpawner {
+    -spawnParent: Transform
+    -enemyRepository: IEnemyRepository
+    -enemyFactory: IEnemyFactory
+    -pathFinder: IPathFinder
+    +SpawnEnemy(type: EnemyType, position: Vector3): EnemyController
+    +SpawnWave(waveConfig: EnemyWave): List<EnemyController>
+}
+
+class WaveManager {
+    -waveConfig: EnemyWave
+    -spawner: IEnemySpawner
+    -pathFinder: IPathFinder
+    +StartWave(): void
+    +StopWave(): void
+    +IsWaveActive: bool
+}
+
+class EnemyProperties {
+    +Type: EnemyType
+    +Health: float
+    +Speed: float
+    +Damage: float
+    +Prefab: GameObject
+}
+
+class EnemyWave {
+    +Waves: List<Wave>
+    +SpawnInterval: float
+    +PathId: string
+}
+
+class Path {
+    +Id: string
+    +Points: List<Vector3>
+    +IsValid: bool
+}
+
+enum EnemyType {
+    Basic
+    Fast
+    Tank
+}
+
+' Relationships
+IEnemySpawner <|.. EnemySpawner
+IWaveManager <|.. WaveManager
+IEnemyRepository <|.. EnemyRepository
+IPathFinder <|.. PathFinder
+IEnemyFactory <|.. EnemyFactory
+
+EnemyController --> EnemyView
+EnemyController --> EnemyProperties
+EnemyController --> Path
+
+EnemySpawner --> IEnemyRepository
+EnemySpawner --> IEnemyFactory
+EnemySpawner --> IPathFinder
+
+WaveManager --> IEnemySpawner
+WaveManager --> IPathFinder
+WaveManager --> EnemyWave
+
+EnemyFactory --> IObjectResolver
+EnemyFactory --> EnemyController
+
+EnemyWave --> Wave
+EnemyProperties --> EnemyType
+
+@enduml 
