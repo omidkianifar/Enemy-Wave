@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Enemy-Tank
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 2
-  <Name>k__BackingField: Basic Enemy
-  <Prefab>k__BackingField: {fileID: 0}
+  <Name>k__BackingField: TurtleShellPolyart
+  <Prefab>k__BackingField: {fileID: 6124254615971997672, guid: 5e982d7d25f529c4bb2707791d87140a, type: 3}
   <MaxHealth>k__BackingField: 100
   <MoveSpeed>k__BackingField: 5
   <Damage>k__BackingField: 10

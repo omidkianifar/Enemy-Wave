@@ -16,5 +16,21 @@ public class SceneContainer : LifetimeScope
             
         builder.RegisterComponentInHierarchy<WaveManager>()
             .As<IWaveManager>();
+
+        builder.RegisterComponentInHierarchy<PathFinder>()
+            .As<IPathFinder>();
+
+        builder.RegisterComponentInHierarchy<EnemyManager>()
+            .As<IEnemyManager>();
+
+        builder.RegisterComponentInHierarchy<GameplayManager>()
+            .As<IGameplayManager>();
+
+        builder.RegisterComponentInHierarchy<GameplayHUD>();
+
+        // Register for instantiation
+        builder.Register<EnemyController>(Lifetime.Transient);
+
+        builder.Register<IEnemyFactory, EnemyFactory>(Lifetime.Singleton);
     }
 }

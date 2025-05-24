@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Enemy-Basic
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 0
-  <Name>k__BackingField: Basic Enemy
-  <Prefab>k__BackingField: {fileID: 2261131073292603663, guid: 309bfc9dba3aef54498c191ff59ef1e5, type: 3}
+  <Name>k__BackingField: SlimePolyart
+  <Prefab>k__BackingField: {fileID: 3982246583423451518, guid: 821e31a496174474fb17d5ab0c5b34a6, type: 3}
   <MaxHealth>k__BackingField: 100
-  <MoveSpeed>k__BackingField: 5
+  <MoveSpeed>k__BackingField: 10
   <Damage>k__BackingField: 10
   <AttackRange>k__BackingField: 2
   <AttackCooldown>k__BackingField: 1

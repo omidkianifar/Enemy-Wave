@@ -11,14 +11,12 @@ public class WaveManager : MonoBehaviour, IWaveManager
     [SerializeField] private float timeBetweenWaves = 5f;
     [SerializeField] private bool autoStart = true;
 
-    [Header("Spawn Settings")]
-    [SerializeField] private Transform spawnCenter;
-    [SerializeField] private float spawnRadius = 10f;
-
     private int currentWaveIndex = -1;
     private bool isWaveActive;
     private Coroutine waveCoroutine;
     private IEnemySpawner spawner;
+    private IPathFinder pathFinder;
+    private IEnemyManager enemyManager;
     private readonly List<EnemyController> activeEnemies = new();
 
     public IReadOnlyList<EnemyWave> WaveConfigs => waveConfigs;
@@ -27,9 +25,11 @@ public class WaveManager : MonoBehaviour, IWaveManager
     public IReadOnlyList<EnemyController> ActiveEnemies => activeEnemies;
 
     [Inject]
-    public void Construct(IEnemySpawner spawner)
+    public void Construct(IEnemySpawner spawner, IPathFinder pathFinder, IEnemyManager enemyManager)
     {
         this.spawner = spawner;
+        this.pathFinder = pathFinder;
+        this.enemyManager = enemyManager;
     }
 
     private void Start()
@@ -68,13 +68,18 @@ public class WaveManager : MonoBehaviour, IWaveManager
         {
             for (int i = 0; i < wave.Count; i++)
             {
-                var spawnPosition = GetRandomSpawnPosition();
-                var controller = spawner.SpawnEnemy(wave.Type, spawnPosition);
+                if (!pathFinder.IsValid)
+                {
+                    Debug.LogError("PathFinder is not valid!");
+                    yield break;
+                }
+
+                var controller = spawner.SpawnEnemy(wave.Type, pathFinder.StartPoint);
                 
                 if (controller != null)
                 {
                     activeEnemies.Add(controller);
-                    controller.OnDeath += HandleEnemyDeath;
+                    enemyManager.AddEnemy(controller);
                 }
 
                 yield return new WaitForSeconds(wave.SpawnDelay);
@@ -93,14 +98,7 @@ public class WaveManager : MonoBehaviour, IWaveManager
     private void HandleEnemyDeath(EnemyController controller)
     {
         activeEnemies.Remove(controller);
-        controller.OnDeath -= HandleEnemyDeath;
-    }
-
-    private Vector3 GetRandomSpawnPosition()
-    {
-        var center = spawnCenter != null ? spawnCenter.position : transform.position;
-        var randomPoint = Random.insideUnitCircle * spawnRadius;
-        return new Vector3(center.x + randomPoint.x, center.y, center.z + randomPoint.y);
+        enemyManager.RemoveEnemy(controller);
     }
 
     public void StopCurrentWave()
