@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Flow Command Summary Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+        }
+        pre {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            color: #d63384;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>GitHub Flow Command Summary Sheet</h1>
+
+    <div class="section">
+        <h2>1. Initial Setup</h2>
+
+        <h3>Create a GitHub Repository</h3>
+        <p>Create a new repository on GitHub through the website. Initialize with a README (optional).</p>
+
+        <h3>Clone the Repository</h3>
+        <pre><code>git clone https://github.com/yourusername/YourRepository.git
+cd YourRepository</code></pre>
+        <p>Clones the GitHub repository to your local machine.</p>
+
+        <h3>Initialize Git LFS</h3>
+        <pre><code>git lfs install</code></pre>
+        <p>Sets up Git LFS in your repository to handle large files.</p>
+
+        <h3>Create a <code>.gitignore</code> File</h3>
+        <pre><code>curl https://raw.githubusercontent.com/github/gitignore/main/Unity.gitignore -o .gitignore</code></pre>
+        <p>Downloads a Unity-specific <code>.gitignore</code> file to ignore unnecessary files in the repository.</p>
+
+        <h3>Commit <code>.gitignore</code> and Set Up Git LFS</h3>
+        <pre><code>git add .gitignore
+git commit -m "Add Unity .gitignore file"
+
+git lfs track "*.psd"
+git lfs track "*.png"
+git lfs track "*.fbx"
+git lfs track "*.wav"
+git lfs track "*.mp4"
+
+git add .gitattributes
+git commit -m "Set up Git LFS for large files"</code></pre>
+
+        <h3>Push Initial Commit</h3>
+        <pre><code>git push origin main</code></pre>
+        <p>Pushes the initial commit to GitHub.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Feature Development</h2>
+
+        <h3>Create a Feature Branch</h3>
+        <pre><code>git checkout -b feature/feature-name</code></pre>
+        <p>Creates a new branch for a feature.</p>
+
+        <h3>Work and Commit</h3>
+        <pre><code>git add .
+git commit -m "Describe your changes"</code></pre>
+        <p>Adds and commits changes to the feature branch.</p>
+
+        <h3>Push the Feature Branch</h3>
+        <pre><code>git push origin feature/feature-name</code></pre>
+        <p>Pushes the feature branch to GitHub.</p>
+
+        <h3>Create a Pull Request</h3>
+        <p>On GitHub, create a PR from your feature branch to <code>main</code>. This is where code review happens.</p>
+
+        <h3>Merge the PR and Delete the Branch</h3>
+        <pre><code>git checkout main
+git pull origin main
+git branch -d feature/feature-name</code></pre>
+        <p>Merges the feature branch and deletes it locally.</p>
+    </div>
+
+    <div class="section">
+        <h2>3. Bug Fixes</h2>
+
+        <h3>Create a Bugfix Branch</h3>
+        <pre><code>git checkout -b bugfix/fix-description</code></pre>
+        <p>Creates a branch for the bug fix.</p>
+
+        <h3>Work and Commit</h3>
+        <pre><code>git add .
+git commit -m "Fix description"</code></pre>
+
+        <h3>Push the Bugfix Branch</h3>
+        <pre><code>git push origin bugfix/fix-description</code></pre>
+        <p>Pushes the bugfix branch to GitHub.</p>
+
+        <h3>Merge the PR and Delete the Branch</h3>
+        <pre><code>git checkout main
+git pull origin main
+git branch -d bugfix/fix-description</code></pre>
+    </div>
+
+    <div class="section">
+        <h2>4. Hotfixes</h2>
+
+        <h3>Create a Hotfix Branch</h3>
+        <pre><code>git checkout -b hotfix/fix-critical-issue</code></pre>
+        <p>Creates a branch for a critical hotfix.</p>
+
+        <h3>Work and Commit</h3>
+        <pre><code>git add .
+git commit -m "Critical issue fix"</code></pre>
+
+        <h3>Push the Hotfix Branch</h3>
+        <pre><code>git push origin hotfix/fix-critical-issue</code></pre>
+
+        <h3>Merge the PR and Delete the Branch</h3>
+        <pre><code>git checkout main
+git pull origin main
+git branch -d hotfix/fix-critical-issue</code></pre>
+    </div>
+
+    <div class="section">
+        <h2>5. Releases</h2>
+
+        <h3>(Optional) Create a Release Branch</h3>
+        <pre><code>git checkout -b release/vX.X</code></pre>
+        <p>Creates a branch for finalizing a release.</p>
+
+        <h3>Finalize and Test</h3>
+        <pre><code>git add .
+git commit -m "Final touches for release"</code></pre>
+
+        <h3>Merge the Release Branch</h3>
+        <pre><code>git checkout main
+git merge release/vX.X</code></pre>
+
+        <h3>Tag the Release</h3>
+        <pre><code>git tag -a vX.X -m "Release version X.X"
+git push origin vX.X</code></pre>
+
+        <h3>Push and Delete the Release Branch</h3>
+        <pre><code>git push origin main
+git branch -d release/vX.X</code></pre>
+    </div>
+
+    <div class="section">
+        <h2>6. General Maintenance</h2>
+
+        <h3>Regularly Pull Updates</h3>
+        <pre><code>git checkout main
+git pull origin main</code></pre>
+        <p>Keeps your local <code>main</code> branch up to date.</p>
+
+        <h3>List Tracked LFS Files</h3>
+        <pre><code>git lfs ls-files</code></pre>
+        <p>Shows the files currently tracked by Git LFS.</p>
+    </div>
+
+</body>
+</html>

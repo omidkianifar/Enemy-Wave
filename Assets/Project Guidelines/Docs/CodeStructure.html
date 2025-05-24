@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Scripts - Coding Guidelines</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Project Scripts - Coding Guidelines</h1>
+
+<h2>Overview</h2>
+<p>This project follows the <strong>Model-View-Controller (MVC)</strong> design pattern, utilizing <strong>VContainer</strong> for managing dependency injection. This structure helps maintain a clear separation of concerns, improving the project's scalability, testability, and maintainability.</p>
+
+<h2>Folder Structure</h2>
+<pre><code>
+    /Scripts
+    /Controllers
+    /Models
+    /Views
+    /Interfaces
+    /Services
+    /DI
+</code></pre>
+
+<ul>
+    <li><strong>Controllers</strong>: Contains classes that handle input, orchestrate the flow of data between Models and Views, and contain the application's business logic.</li>
+    <li><strong>Models</strong>: Contains data classes and business logic. Models should be independent of other parts of the application.</li>
+    <li><strong>Views</strong>: Contains scripts directly associated with UI elements or visual representations in the game.</li>
+    <li><strong>Interfaces</strong>: Contains all interfaces used for dependency injection and interaction between components.</li>
+    <li><strong>Services</strong>: Contains reusable services or utilities (e.g., data persistence, network communication).</li>
+    <li><strong>DI</strong>: Contains VContainer installers and configurations.</li>
+</ul>
+
+<h2>Coding Guidelines</h2>
+
+<h3>1. General Principles</h3>
+<ul>
+    <li>Follow the <strong>Single Responsibility Principle</strong>: Each class should have one responsibility.</li>
+    <li>Adhere to <strong>Separation of Concerns</strong>: Keep Models, Views, and Controllers strictly separated.</li>
+    <li><strong>Dependency Injection (DI)</strong> should be used to inject dependencies, rather than creating instances inside classes.</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/SOLID" target="_blank">Learn More</a> principles in object-oriented design.</p>
+
+<h3>2. Model Layer</h3>
+<ul>
+    <li>Models should contain only the data structure and business logic.</li>
+    <li>No direct references to Views or Controllers should be made from the Model.</li>
+</ul>
+<p><a href="https://martinfowler.com/eaaCatalog/domainModel.html" target="_blank">Learn More about Models</a>.</p>
+
+<h3>3. View Layer</h3>
+<ul>
+    <li>Views should be passive: They listen to the Controller for instructions and notify the Controller about user inputs or changes.</li>
+    <li>Avoid placing business logic in Views; Views should focus on the presentation.</li>
+    <li>Use <code>[SerializeField]</code> to expose fields to the Unity Inspector, but prefer properties with private backing fields for logic within the class.</li>
+</ul>
+<p><a href="https://martinfowler.com/eaaDev/uiArchs.html" target="_blank">Learn More about Views</a>.</p>
+
+<h3>4. Controller Layer</h3>
+<ul>
+    <li>Controllers should mediate between Models and Views.</li>
+    <li>Controllers should retrieve data from Models and update Views accordingly.</li>
+    <li>Inject dependencies into Controllers using <strong>VContainer</strong>. Avoid <code>new</code> keyword for creating instances in Controllers.</li>
+</ul>
+<p><a href="https://developerlife.com/2021/08/24/mvc/" target="_blank">Learn More about Controllers</a>.</p>
+
+<h3>5. Dependency Injection (DI) with VContainer</h3>
+<ul>
+    <li>Use <strong>Interfaces</strong> to define dependencies between layers.</li>
+    <li>Register all dependencies in <strong>Installer</strong> classes within the <strong>DI</strong> folder.</li>
+    <li>Prefer <strong>constructor injection</strong> over other types of injection (e.g., method or property injection).</li>
+    <li>Avoid directly using the <code>VContainer.Instance</code> outside of the <strong>DI</strong> folder; instead, pass dependencies through constructors.</li>
+</ul>
+<p><a href="https://vcontainer.hadashikick.jp/" target="_blank">Learn More about VContainer</a>.</p>
+
+<h3>6. Instantiating Objects</h3>
+<ul>
+    <li><strong>VContainer</strong> should be used for instantiating objects that require dependency injection.</li>
+    <li><strong>Avoid using Unity's <code>Instantiate</code> method</strong> for creating objects that are part of the dependency graph. Instead, register the object in a VContainer Installer and inject it where needed.</li>
+</ul>
+<p>Example of VContainer instantiation:</p>
+<pre><code>public class MyInstaller : IInstaller
+{
+    public void Install(IContainerBuilder builder)
+    {
+        builder.Register<MyController>(Lifetime.Scoped);
+    }
+}</code></pre>
+
+<p>Inject the <code>MyController</code> in other classes:</p>
+<pre><code>public class SomeClass
+{
+    private readonly MyController _myController;
+
+    public SomeClass(MyController myController)
+    {
+        _myController = myController;
+    }
+
+    public void DoSomething()
+    {
+        _myController.Execute();
+    }
+}</code></pre>
+
+<ul>
+    <li>Use Unity's <code>Instantiate</code> only for pure GameObjects that do not require injected dependencies.</li>
+</ul>
+
+<h3>7. Interfaces</h3>
+<ul>
+    <li>Use interfaces to decouple components and enhance testability.</li>
+    <li>Each service or component that is used across the application should expose an interface.</li>
+</ul>
+
+<h3>8. Naming Conventions</h3>
+<ul>
+    <li><strong>Models</strong>: Use singular nouns, e.g., <code>PlayerModel</code>.</li>
+    <li><strong>Controllers</strong>: Use <code>Controller</code> as a suffix, e.g., <code>PlayerController</code>.</li>
+    <li><strong>Views</strong>: Use <code>View</code> as a suffix, e.g., <code>PlayerView</code>.</li>
+    <li><strong>Interfaces</strong>: Prefix with <code>I</code>, e.g., <code>IPlayerService</code>.</li>
+</ul>
+
+<h3>9. Error Handling</h3>
+<ul>
+    <li>Handle exceptions at the appropriate level, preferably in the Controllers.</li>
+    <li>Use <code>try-catch</code> blocks only when necessary and ensure that all exceptions are logged.</li>
+</ul>
+
+<h3>10. Code Comments & Documentation</h3>
+<ul>
+    <li>Comment your code where necessary to explain complex logic or assumptions.</li>
+    <li>Use XML documentation comments for public methods and classes to improve code readability and maintainability.</li>
+</ul>
+
+<h3>11. Unit Testing</h3>
+<ul>
+    <li>Focus on testing Controllers and Models.</li>
+    <li>Mock dependencies injected into Controllers using interfaces.</li>
+    <li>Ensure each test is independent and can run in isolation.</li>
+</ul>
+
+<h3>12. Unity-Specific Best Practices</h3>
+<ul>
+    <li>Use <strong>ScriptableObjects</strong> for managing global game states and configurations.</li>
+    <li>Prefer <strong>Object Pooling</strong> to manage frequently instantiated objects to improve performance.</li>
+    <li>Regularly profile your game to identify and fix performance bottlenecks.</li>
+</ul>
+
+<h3>13. Code Reviews and Contributions</h3>
+<ul>
+    <li>All code changes should go through a code review process.</li>
+    <li>Ensure that new features or bug fixes are covered by unit tests.</li>
+    <li>Follow the existing code style and structure for consistency.</li>
+</ul>
+
+<h2>Contributions</h2>
+<p>When contributing to the project, ensure that you follow these guidelines to maintain consistency and readability across the codebase.</p>
+
+<p>By adhering to these rules, we ensure that our project remains organized, scalable, and maintainable.</p>
+
+</body>
+</html>

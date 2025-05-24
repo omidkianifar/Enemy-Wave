@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity Project Folder Structure</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Unity Project Folder Structure</h1>
+
+<pre><code>Assets/
+├── _Project/
+│   ├── Scripts/
+│   │   ├── Managers/
+│   │   ├── UI/
+│   │   └── Other/
+│   ├── Scenes/
+│   │   ├── MainMenu.unity
+│   │   ├── Level1.unity
+│   │   └── Level2.unity
+│   ├── Contents/
+│   │   ├── Weapons/
+│   │   │   ├── Kolt/
+│   │   │   │   ├── Models/
+│   │   │   │   │   └── KoltModel.fbx
+│   │   │   │   ├── Textures/
+│   │   │   │   │   └── KoltTexture.png
+│   │   │   │   ├── Materials/
+│   │   │   │   │   └── KoltMaterial.mat
+│   │   │   │   ├── Animations/
+│   │   │   │   │   └── KoltReload.anim
+│   │   │   │   ├── Sounds/
+│   │   │   │   │   └── KoltShoot.wav
+│   │   │   │   ├── Prefabs/
+│   │   │   │   │   └── KoltPrefab.prefab
+│   │   │   │   └── ScriptableObjects/
+│   │   │   │       └── KoltData.asset
+│   │   │   ├── AK47/
+│   │   │   └── Shotgun/
+│   │   ├── Characters/
+│   │   │   ├── Player/
+│   │   │   │   ├── Models/
+│   │   │   │   ├── Animations/
+│   │   │   │   ├── Textures/
+│   │   │   │   ├── Materials/
+│   │   │   │   └── Prefabs/
+│   │   │   └── Enemy/
+│   │   │       ├── Models/
+│   │   │       ├── Animations/
+│   │   │       ├── Textures/
+│   │   │       ├── Materials/
+│   │   │       └── Prefabs/
+│   │   └── OtherItems/
+│   ├── UI/
+│   │   ├── Sprites/
+│   │   ├── Fonts/
+│   │   └── Prefabs/
+│   └── Shaders/
+├── Editor/
+│   ├── CustomEditors/
+│   └── Tools/
+└── ThirdParty/
+    ├── Plugins/
+    └── ExternalAssets/
+</code></pre>
+
+</body>
+</html>
