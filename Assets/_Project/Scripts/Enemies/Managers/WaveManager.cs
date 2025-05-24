@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using VContainer;
 
 public class WaveManager : MonoBehaviour, IWaveManager
 {
@@ -25,13 +26,10 @@ public class WaveManager : MonoBehaviour, IWaveManager
     public bool IsWaveActive => isWaveActive;
     public IReadOnlyList<EnemyController> ActiveEnemies => activeEnemies;
 
-    private void Awake()
+    [Inject]
+    public void Construct(IEnemySpawner spawner)
     {
-        spawner = GetComponent<IEnemySpawner>();
-        if (spawner == null)
-        {
-            Debug.LogError("IEnemySpawner component is missing!");
-        }
+        this.spawner = spawner;
     }
 
     private void Start()

@@ -1,23 +1,20 @@
 using UnityEngine;
 using System.Collections.Generic;
+using VContainer;
 
 // TODO: Implement object pooling for better performance
 public class EnemySpawner : MonoBehaviour, IEnemySpawner
 {
-    [Header("References")]
-    [SerializeField] private GameObject enemyPrefab;
 
     [Header("Spawn Settings")]
     [SerializeField] private Transform spawnParent;
 
     private IEnemyRepository enemyRepository;
 
-    private void Awake()
+    [Inject]
+    public void Construct(IEnemyRepository enemyRepository)
     {
-        var repository = EnemyRepository.Load();
-        if (repository == null) return;
-
-        enemyRepository = new CachedEnemyRepository(repository);
+        this.enemyRepository = enemyRepository;
     }
 
     public EnemyController SpawnEnemy(EnemyType type, Vector3 position)
@@ -29,7 +26,7 @@ public class EnemySpawner : MonoBehaviour, IEnemySpawner
             return null;
         }
 
-        var enemyObject = Instantiate(enemyPrefab, position, Quaternion.identity, spawnParent);
+        var enemyObject = Instantiate(properties.Prefab, position, Quaternion.identity, spawnParent);
         var enemyView = enemyObject.GetComponent<EnemyView>();
         if (enemyView == null)
         {

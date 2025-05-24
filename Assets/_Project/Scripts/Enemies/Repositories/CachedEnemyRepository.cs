@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class CachedEnemyRepository : IEnemyRepository
 {
@@ -8,9 +9,14 @@ public class CachedEnemyRepository : IEnemyRepository
 
     public IReadOnlyList<EnemyProperties> Enemies => repository.Enemies;
 
-    public CachedEnemyRepository(IEnemyRepository repository)
+    public CachedEnemyRepository()
     {
-        this.repository = repository;
+        repository = EnemyRepository.Load();
+        if (repository == null)
+        {
+            Debug.LogError("Failed to load EnemyRepository!");
+            return;
+        }
         InitializeCache();
     }
 
