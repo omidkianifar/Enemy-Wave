@@ -42,6 +42,7 @@ public class EnemyManager : MonoBehaviour, IEnemyManager
 
     private void HandleEnemyReachedEnd(EnemyController enemy)
     {
+        gameplayManager.TakeDamage(1);
         OnEnemyReachedEnd?.Invoke(enemy);
         RemoveEnemy(enemy);
     }

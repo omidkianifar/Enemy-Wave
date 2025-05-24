@@ -19,6 +19,8 @@ public class WaveManager : MonoBehaviour, IWaveManager
     private IEnemyManager enemyManager;
     private readonly List<EnemyController> activeEnemies = new();
 
+    public event System.Action OnWaveStateChanged;
+
     public IReadOnlyList<EnemyWave> WaveConfigs => waveConfigs;
     public int CurrentWaveIndex => currentWaveIndex;
     public bool IsWaveActive => isWaveActive;
@@ -57,6 +59,7 @@ public class WaveManager : MonoBehaviour, IWaveManager
     private IEnumerator SpawnWave(EnemyWave waveConfig)
     {
         isWaveActive = true;
+        OnWaveStateChanged?.Invoke();
         var waves = waveConfig.Waves.ToList();
 
         if (waveConfig.RandomizeSpawnOrder)
@@ -80,6 +83,7 @@ public class WaveManager : MonoBehaviour, IWaveManager
                 {
                     activeEnemies.Add(controller);
                     enemyManager.AddEnemy(controller);
+                    controller.OnDeath += HandleEnemyDeath;
                 }
 
                 yield return new WaitForSeconds(wave.SpawnDelay);
@@ -92,13 +96,15 @@ public class WaveManager : MonoBehaviour, IWaveManager
         }
 
         isWaveActive = false;
+        OnWaveStateChanged?.Invoke();
         yield return new WaitForSeconds(timeBetweenWaves);
     }
 
-    private void HandleEnemyDeath(EnemyController controller)
+    private void HandleEnemyDeath(EnemyController enemy)
     {
-        activeEnemies.Remove(controller);
-        enemyManager.RemoveEnemy(controller);
+        activeEnemies.Remove(enemy);
+        enemy.OnDeath -= HandleEnemyDeath;
+        enemyManager.RemoveEnemy(enemy);
     }
 
     public void StopCurrentWave()
@@ -115,6 +121,19 @@ public class WaveManager : MonoBehaviour, IWaveManager
         StopCurrentWave();
         currentWaveIndex = -1;
         isWaveActive = false;
+        activeEnemies.Clear();
+    }
+
+    private void OnDestroy()
+    {
+        // Clean up event subscriptions
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy != null)
+            {
+                enemy.OnDeath -= HandleEnemyDeath;
+            }
+        }
         activeEnemies.Clear();
     }
 } 

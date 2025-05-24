@@ -7,6 +7,8 @@ public interface IWaveManager
     bool IsWaveActive { get; }
     IReadOnlyList<EnemyController> ActiveEnemies { get; }
 
+    event System.Action OnWaveStateChanged;
+
     void StartNextWave();
     void StopCurrentWave();
     void ResetWaves();
